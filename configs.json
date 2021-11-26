@@ -1,0 +1,10 @@
+{
+  "username": "dpaige",
+  "token": "",
+  "org": "ramda",
+  "baseUrl": "https://api.github.com",
+  "reposType": "all",
+  "reposPerPage": "100",
+  "pullsState": "open",
+  "pullsPerPage": "100"
+}
