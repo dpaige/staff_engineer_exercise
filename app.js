@@ -34,7 +34,7 @@ app.get("/prs", async (req, res) => {
     const getReposUrl = `${baseUrl}/orgs/${org}/repos?per_page=${configs.reposPerPage}&type=${configs.reposType}`;
     const reposRaw = await getFetch(getReposUrl, auth);
     const repos = await reposRaw.json();
-    if (!Object.keys(repos) || repos.length === 0) {
+    if (!Object.keys(repos) || repos.length === 0 ||!Array.isArray(repos)) {
       sendHttpStatus(res, 404, `No repos found for organization ${org}`);
       return;
     }
