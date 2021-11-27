@@ -50,10 +50,27 @@ app.get("/prs", async (req, res) => {
     }
 
     //get list of pulls for all repos in organization
-    //repoNames = ["ramda-fantasy", "ramda-lens"]; //TESTING - REMOVE!!!!!
+    repoNames = ["eslint-plugin-ramda", "ramda-lens"]; //TESTING - REMOVE!!!!!
     const pulls = await getPulls(auth, repoNames, configs);
 
-    sendHttpStatus(res, 200, JSON.stringify(pulls));
+    //find total count
+    const depth = getArrayDepth(pulls);
+    const pullsFlat = pulls.flat(depth);
+    //console.log(pullsFlat.length);
+    
+    //TODO
+    //how many pull requests were merged week over week across the organization?
+    //get current date/time in ISO format
+    const date = new Date();
+    const dateFormatted = date.toISOString();
+    //console.log(dateFormatted);
+
+    //find closed PRs
+    //const closed = pullsFlat.filter((pr) => pr.state === "closed");
+    //console.log(closed.length);
+
+    //sendHttpStatus(res, 200, JSON.stringify(pulls));
+    sendHttpStatus(res, 200, "Success");
   } catch (error) {
     sendHttpStatus(res, 400, `Error: ${error}`);
   }
@@ -65,6 +82,12 @@ const basicAuth = (configs) => {
 
 //convert string to base64
 const btoa = (value) => Buffer.from(value).toString("base64");
+
+function getArrayDepth(value) {
+  return Array.isArray(value) ? 
+    1 + Math.max(...value.map(getArrayDepth)) :
+    0;
+}
 
 //get configuration file from directory
 const getConfigs = () => {
