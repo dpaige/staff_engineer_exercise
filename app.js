@@ -56,7 +56,7 @@ app.get("/prs", async (req, res) => {
     //find total count
     const depth = getArrayDepth(pulls);
     const pullsFlat = pulls.flat(depth);
-    //console.log(pullsFlat.length);
+    console.log(`pullsFlat.length: ${pullsFlat.length}`);
     
     //TODO
     //how many pull requests were merged week over week across the organization?
@@ -164,7 +164,10 @@ const getPrData = async (url, auth) => {
       const startChar = matchStr.indexOf("<");
       const endChar = matchStr.indexOf(">");
       const nextUrl = matchStr.substring(startChar+1, endChar); //strip out url string between < and >
-      await getPrData(nextUrl, auth);
+      const nextPr = await getPrData(nextUrl, auth, allPrs);
+      if (Object.keys(nextPr) && nextPr.length > 0) {
+        allPrs.push(nextPr);
+      }
     }
   }
   return allPrs;
