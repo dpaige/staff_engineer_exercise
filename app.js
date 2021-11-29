@@ -50,7 +50,7 @@ app.get("/prs", async (req, res) => {
     }
 
     //get list of pulls for all repos in organization
-    repoNames = ["eslint-plugin-ramda", "ramda-lens"]; //TESTING - REMOVE!!!!!
+    //repoNames = ["eslint-plugin-ramda", "ramda-lens"]; //TESTING - REMOVE!!!!!
     const pulls = await getPulls(auth, repoNames, configs);
 
     //find total count
@@ -126,15 +126,18 @@ const getFetch = async (url, auth) => {
   }
 };
 
-//get pull requests: e.g. /repos/{owner}/{repo}/pulls
+//get pull requests: e.g. /repos/{owner}/{repo}/pulls?per_page=100&state=all
 const getPulls = async (auth, repoNames, configs) => {
   try {
     let allPulls = [];
+    const baseUrl = configs.baseUrl;
+    const pullsPerPage = configs.pullsPerPage;
+    const pullsState = configs.pullsState;
     for (let i = 0; i < repoNames.length; i++) {
       const name = repoNames[i];
       //per_page: max 100
       //state options: open, closed, or all
-      const url = `${configs.baseUrl}/repos/${configs.org}/${name}/pulls?per_page=${configs.pullsPerPage}&state=${configs.pullsState}`;
+      const url = `${baseUrl}/repos/${configs.org}/${name}/pulls?per_page=${pullsPerPage}&state=${pullsState}`;
       const prData = await getPrData(url, auth);
       allPulls.push(prData);
     }
@@ -161,8 +164,7 @@ const getPrData = async (url, auth) => {
       const startChar = matchStr.indexOf("<");
       const endChar = matchStr.indexOf(">");
       const nextUrl = matchStr.substring(startChar+1, endChar); //strip out url string between < and >
-      const nextPr = await getPrData(nextUrl, auth);
-      allPrs.push(nextPr);
+      await getPrData(nextUrl, auth);
     }
   }
   return allPrs;
