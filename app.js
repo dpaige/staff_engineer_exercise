@@ -56,7 +56,6 @@ app.get("/prs", async (req, res) => {
     //find total count
     const depth = getArrayDepth(pulls);
     const pullsFlat = pulls.flat(depth);
-    console.log(`pullsFlat.length: ${pullsFlat.length}`);
     
     //TODO
     //how many pull requests were merged week over week across the organization?
@@ -69,8 +68,8 @@ app.get("/prs", async (req, res) => {
     //const closed = pullsFlat.filter((pr) => pr.state === "closed");
     //console.log(closed.length);
 
-    //sendHttpStatus(res, 200, JSON.stringify(pulls));
-    sendHttpStatus(res, 200, "Success");
+    sendHttpStatus(res, 200, pullsFlat.length);
+    //sendHttpStatus(res, 200, "Success");
   } catch (error) {
     sendHttpStatus(res, 400, `Error: ${error}`);
   }
